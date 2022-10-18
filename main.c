@@ -2,7 +2,7 @@
 * File Name:   main.c
 *
 * Description: This is the source code for the XMC MCU: FCE CRC example
-*              for ModusToolbox. The example uses the XMC_FCE Low Level Driver 
+*              for ModusToolbox. The example uses XMC_FCE Low Level Driver 
 *              to perform CRC8, CRC16 and CRC32 operation.
 *
 * Related Document: See README.md
@@ -41,15 +41,29 @@
 /******************************************************************************
 * Include header files
 ******************************************************************************/
+
 #include "cybsp.h"
 #include "cy_utils.h"
-#include "retarget_io.h"
+#include "cy_retarget_io.h"
 #include <stdio.h>
 #include "xmc_fce.h"
 
 /*******************************************************************************
+* Macros
+*******************************************************************************/
+
+/* Define macro to enable/disable printing of debug messages */
+#define ENABLE_XMC_DEBUG_PRINT              (0)
+
+/* Define macro to set the loop count before printing debug messages */
+#if ENABLE_XMC_DEBUG_PRINT
+#define DEBUG_LOOP_COUNT_MAX                (1U)
+#endif
+
+/*******************************************************************************
 * Global Variables
 *******************************************************************************/
+
 /* Data Packet 1 */
 int8_t usecase1_data1[] =   "XMC MCU: FCE CRC example";
 /* Data Packet 2 */
@@ -188,8 +202,12 @@ int main(void)
     /* Enable global interrupts */
     __enable_irq();
 
-    /* Initialize printf retarget */
-    retarget_io_init();
+    /* Initialize retarget-io to use the debug UART port */
+    cy_retarget_io_init(CYBSP_DEBUG_UART_HW);
+
+    #if ENABLE_XMC_DEBUG_PRINT
+    printf("Initialization done\r\n");
+    #endif
 
     /* \x1b[2J\x1b[;H - ANSI ESC sequence to clear screen. */
     printf("\x1b[2J\x1b[;H");
