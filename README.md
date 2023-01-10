@@ -1,23 +1,30 @@
 # XMC&trade; MCU: FCE CRC
 
-This code example uses the Flexible CRC Engine (FCE) driver for the Kernel to demonstrate CRC-32, CRC-16, and CRC-8 checksum calculations. The CRC result and debug messages are displayed on a serial terminal using UART communication. The onboard User LED is used to indicate an error.
+This code example uses the flexible CRC engine (FCE) driver for kernel to demonstrate CRC-32, CRC-16, and CRC-8 checksum calculations. The CRC result and debug messages are displayed on a serial terminal using UART communication. The onboard User LED is used to indicate an error.
+
+[View this README on GitHub.](https://github.com/Infineon/mtb-example-xmc-fce-crc)
+
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzI2ODAiLCJTcGVjIE51bWJlciI6IjAwMi0zMjY4MCIsIkRvYyBUaXRsZSI6IlhNQyZ0cmFkZTsgTUNVOiBGQ0UgQ1JDIiwicmlkIjoiYnJ2aSIsIkRvYyB2ZXJzaW9uIjoiMi4xLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiSUNXIiwiRG9jIEZhbWlseSI6Ik4vQSJ9)
 
 ## Requirements
 
 - [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) v3.0
 - [SEGGER J-Link software](https://www.segger.com/downloads/jlink/#J-LinkSoftwareAndDocumentationPack)
 - Programming language: C
-- Associated parts: All [XMC&trade; 4000 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/) parts
+- Associated parts: All [XMC4000 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/) parts
 
 ## Supported toolchains (make variable 'TOOLCHAIN')
 
 - GNU Arm&reg; embedded compiler v10.3.1 (`GCC_ARM`) - Default value of `TOOLCHAIN`
-- Arm&reg; compiler v6.16 (`ARM`)
-- IAR C/C++ compiler v9.30.1 (`IAR`)
 
 ## Supported kits (make variable 'TARGET')
 
 - [XMC4700 relax kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc47_relax_v1/) (`KIT_XMC47_RELAX_V1`) - Default value of `TARGET`
+- [XMC4200 Platform2Go kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc_plt2go_xmc4200/) (`KIT_XMC_PLT2GO_XMC4200`)
+- [XMC4300 relax EtherCAT kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc43_relax_ecat_v1/) (`KIT_XMC43_RELAX_ECAT_V1`)
+- [XMC4400 Platform2Go kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc_plt2go_xmc4400/) (`KIT_XMC_PLT2GO_XMC4400`)
+- [XMC4500 relax kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc45_relax_v1/) (`KIT_XMC45_RELAX_V1`)
+- [XMC4800 relax EtherCAT kit](https://www.infineon.com/cms/en/product/evaluation-boards/kit_xmc48_relax_ecat_v1/) (`KIT_XMC48_RELAX_ECAT_V1`)
 
 ## Hardware setup
 
@@ -33,9 +40,9 @@ This example requires no additional software or tools.
 
 Create the project and open it using one of the following:
 
-<details open><summary><b>In Eclipse IDE for ModusToolbox&trade; software</b></summary>
+<details><summary><b>In Eclipse IDE for ModusToolbox&trade; software</b></summary>
 
-1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox Application**). This launches the [Project Creator](https://www.infineon.com/ModusToolboxProjectCreator) tool.
+1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox&trade; Application**). This launches the [Project Creator](https://www.infineon.com/ModusToolboxProjectCreator) tool.
 
 2. Pick a kit supported by the code example from the list shown in the **Project Creator - Choose Board Support Package (BSP)** dialog.
 
@@ -53,17 +60,17 @@ Create the project and open it using one of the following:
 
 6. Click **Create** to complete the application creation process.
 
-For more details, see the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/ide_{version}/docs/mtb_ide_user_guide.pdf*).
+For more details, see the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mt_ide_user_guide.pdf*).
 
 </details>
 
-<details open><summary><b>In command-line interface (CLI)</b></summary>
+<details><summary><b>In command-line interface (CLI)</b></summary>
 
 ModusToolbox&trade; software provides the Project Creator as both a GUI tool and the command line tool, "project-creator-cli". The CLI tool can be used to create applications from a CLI terminal or from within batch files or shell scripts. This tool is available in the *{ModusToolbox&trade; software install directory}/tools_{version}/project-creator/* directory.
 
 Use a CLI terminal to invoke the "project-creator-cli" tool. On Windows, use the command line "modus-shell" program provided in the ModusToolbox&trade; software installation instead of a standard Windows command-line application. This shell provides access to all ModusToolbox&trade; software tools. You can access it by typing `modus-shell` in the search box in the Windows menu. In Linux and macOS, you can use any terminal application.
 
-This tool has the following arguments:
+The "project-creator-cli" tool has the following arguments:
 
 Argument | Description | Required/optional
 ---------|-------------|-----------
@@ -84,9 +91,9 @@ The following example will clone the "[FCE CRC](https://github.com/Infineon/mtb-
 
 </details>
 
-<details open><summary><b>In third-party IDEs</b></summary>
+<details><summary><b>In third-party IDEs</b></summary>
 
-**Note:** Only VS Code is supported.
+**Note:** Only VS code is supported.
 
 1. Follow the instructions from the **In command-line interface (CLI)** section to create the application, and import the libraries using the `make getlibs` command.
 
@@ -122,15 +129,15 @@ You can debug the example to step through the code. In the IDE, use the **\<Appl
 
 ## Design and implementation
 
-Flexible CRC Engine (FCE) is a hardware acceleration engine for software applications using the CRC algorithm. FCE provides a parallel implementation of CRC algorithms because it consists of four CRC kernels independent of each other. The FCE implements the IEEE 802.3 Ethernet CRC-32 using CRC Kernel 0 and CRC Kernel 1, the CCITT CRC-16 using CRC Kernel 2, and the SAE J1850 CRC-8 using CRC Kernel 3.
+Flexible CRC engine (FCE) is a hardware acceleration engine for software applications using the CRC algorithm. FCE provides a parallel implementation of CRC algorithms because it consists of four CRC kernels independent of each other. The FCE implements the IEEE 802.3 Ethernet CRC-32 using CRC Kernel 0 and CRC Kernel 1, the CCITT CRC-16 using CRC Kernel 2, and the SAE J1850 CRC-8 using CRC Kernel 3.
 
 This code example is divided into six steps:
 
 - **Step 1:** A CRC-32 operation is performed on a dataset with the seed value set to '0' and output inversion enabled. This step uses CRC Kernel 0.
 
-- **Step 2:** CRC Kernel 1 is used to perform a CRC-32 operation on the same dataset to calculate the CRC value. However, in this case, CRC match is enabled. The CRC result is compared with the CRC result obtained in the previous step (without inversion) to ensure that there is no CRC mismatch.
+- **Step 2:** CRC Kernel 1 is used to perform a CRC-32 operation on the same dataset to calculate the CRC value. However, in this case, CRC match is enabled. The CRC result is compared with the CRC result obtained in the previous step (without inversion) to ensure that there in no CRC mismatch.
 
-- **Step 3:** CRC Kernel 1 is used to perform a CRC-32 operation on a different dataset. CRC match is enabled and the same CRC result is used. In this case, CRC mismatch and length error occurs because the dataset is different. However, as this error is expected, it is not handled and is just printed onto the serial terminal.
+- **Step 3:** CRC Kernel 1 is used to perform a CRC-32 operation on a different dataset. CRC match is enabled and the same CRC result is used. In this case, CRC mismatch and length error occur because the dataset is different. However, as this error is expected, it is not handled and is just printed onto the serial terminal.
 
 - **Step 4:** CRC Kernel 2 is used to perform a CRC-16 operation with the seed value of '0' and byte-wise reflection enabled.
 
@@ -166,26 +173,27 @@ The project uses a custom *design.modus* file because the following settings wer
 Resources  | Links
 -----------|----------------------------------
 Code examples  | [Using ModusToolbox&trade; software](https://github.com/Infineon/Code-Examples-for-ModusToolbox-Software) on GitHub
-Device documentation | [XMC4000 family datasheets](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/#document-group-myInfineon-49) <br> [XMC4000 family technical reference manuals](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/#document-group-myInfineon-44)
-Development kits | [XMC&trade; eval boards](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/#boards)
-Libraries on GitHub | [mtb-xmclib-cat3](https://github.com/Infineon/mtb-xmclib-cat3) – XMC&trade; MCU peripheral library (XMCLib) and docs
-Tools | [Eclipse IDE for ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use software and tools enabling rapid development with Infineon MCUs, covering applications from embedded sense and control to wireless and cloud-connected systems using AIROC&trade; Wi-Fi and Bluetooth® connectivity devices.
+Device documentation | [XMC4000 MCU family datasheets](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/#document-group-myInfineon-49) <br> [XMC4000 MCU family technical reference manuals](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/32-bit-xmc4000-industrial-microcontroller-arm-cortex-m4/#document-group-myInfineon-44)
+Development kits | [XMC&trade; MCU eval boards](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/#boards)
+Libraries on GitHub  | [mtb-xmclib-cat3](https://github.com/Infineon/mtb-xmclib-cat3) – XMC&trade; peripheral driver library (XMCLib)
+Tools  | [Eclipse IDE for ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use software and tools enabling rapid development with Infineon MCUs, covering applications from embedded sense and control to wireless and cloud-connected systems using AIROC&trade; Wi-Fi and Bluetooth® connectivity devices.
 
 ## Other resources
 
-Infineon provides a wealth of data at www.infineon.com to help you select the right device, and quickly and effectively integrate it into your design.
+Infineon provides a wealth of data at [www.infineon.com](https://www.infineon.com/) to help you select the right device, and quickly and effectively integrate it into your design.
 
-For XMC&trade; MCU devices, see [32-bit XMC™ industrial microcontroller based on Arm® Cortex®-M](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/).
+For XMC&trade; MCU devices, see [32-bit XMC&trade; Industrial microcontroller based on Arm® Cortex®-M](https://www.infineon.com/cms/en/product/microcontroller/32-bit-industrial-microcontroller-based-on-arm-cortex-m/).
 
 ## Document history
 
 Document title: *CE232680* - *XMC&trade; MCU: FCE CRC*
 
- Version | Description of change
- ------- | ---------------------
- 1.0.0   | New code example
- 1.1.0   | Added support for new kits
- 2.0.0   | Updated to support ModusToolbox&trade; software v3.0, CE will not be backward compatible with previous versions of ModusToolbox™ software
+| Version | Description of change |
+| ------- | --------------------- |
+| 1.0.0   | New code example      |
+| 1.1.0   | Added support for new kits |
+| 2.0.0   | Updated to support ModusToolbox&trade; software v3.00. This CE is not backward compatible with previous versions of ModusToolbox&trade; software.|
+| 2.1.0   | Added support for FCE personality |
 ------
 
 All other trademarks or registered trademarks referenced herein are the property of their respective owners.

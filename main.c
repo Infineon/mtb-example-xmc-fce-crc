@@ -9,7 +9,7 @@
 *
 ******************************************************************************
 *
-* Copyright (c) 2021, Infineon Technologies AG
+* Copyright (c) 2022, Infineon Technologies AG
 * All rights reserved.                        
 *                                             
 * Boost Software License - Version 1.0 - August 17th, 2003
@@ -45,8 +45,6 @@
 #include "cybsp.h"
 #include "cy_utils.h"
 #include "cy_retarget_io.h"
-#include <stdio.h>
-#include "xmc_fce.h"
 
 /*******************************************************************************
 * Macros
@@ -54,11 +52,6 @@
 
 /* Define macro to enable/disable printing of debug messages */
 #define ENABLE_XMC_DEBUG_PRINT              (0)
-
-/* Define macro to set the loop count before printing debug messages */
-#if ENABLE_XMC_DEBUG_PRINT
-#define DEBUG_LOOP_COUNT_MAX                (1U)
-#endif
 
 /*******************************************************************************
 * Global Variables
@@ -77,66 +70,6 @@ int8_t usecase1_data3[] =   "This code example uses the Flexible CRC Engine "
                             "result and debug messages are displayed on a "
                             "serial terminal using UART communication. The "
                             "onboard User LED is used to indicate an error.";
-
-/* FCE configuration for CRC32 operation using Kernel 0
- * Algorithm: IR Byte Wise Reflection disabled
- *          : CRC 32-Bit Wise Reflection disabled
- *          : XOR with final CRC enabled
- * Initial seedvalue: 0U
- */
-XMC_FCE_t FCE_config0 =
-{
-    .kernel_ptr = XMC_FCE_CRC32_0,                          /* FCE Kernel Pointer */
-    .fce_cfg_update.config_refin = XMC_FCE_REFIN_RESET,     /* Disables byte-wise reflection */
-    .fce_cfg_update.config_refout = XMC_FCE_REFOUT_RESET,   /* Disables bit-wise reflection */
-    .fce_cfg_update.config_xsel = XMC_FCE_INVSEL_SET,       /* Enables output inversion */
-    .seedvalue = 0U                                         /* CRC seed value to be used */
-};
-
-/* FCE configuration for CRC32 operation using Kernel 1
- * Algorithm: IR Byte Wise Reflection disabled
- *          : CRC 32-Bit Wise Reflection disabled
- *          : XOR with final CRC disabled
- * Initial seedvalue: 0U
- */
-XMC_FCE_t FCE_config1 =
-{
-    .kernel_ptr = XMC_FCE_CRC32_1,                          /* FCE Kernel Pointer */
-    .fce_cfg_update.config_refin = XMC_FCE_REFIN_RESET,     /* Disables byte-wise reflection */
-    .fce_cfg_update.config_refout = XMC_FCE_REFOUT_RESET,   /* Disables bit-wise reflection */
-    .fce_cfg_update.config_xsel = XMC_FCE_INVSEL_RESET,     /* Disables output inversion */
-    .seedvalue = 0U                                         /* CRC seed value to be used */
-};
-
-/* FCE configuration for CRC16 operation using Kernel 2
- * Algorithm: IR Byte Wise Reflection enabled
- *          : CRC 32-Bit Wise Reflection disabled
- *          : XOR with final CRC disabled
- * Initial seedvalue: 0U
- */
-XMC_FCE_t FCE_config2 =
-{
-    .kernel_ptr = XMC_FCE_CRC16,                            /* FCE Kernel Pointer */
-    .fce_cfg_update.config_refin = XMC_FCE_REFIN_SET,       /* Enables byte-wise reflection */
-    .fce_cfg_update.config_refout = XMC_FCE_REFOUT_RESET,   /* Disables bit-wise reflection */
-    .fce_cfg_update.config_xsel = XMC_FCE_INVSEL_RESET,     /* Disables output inversion */
-    .seedvalue = 0U                                         /* CRC seed value to be used */
-};
-
-/* FCE configuration for CRC8 operation using Kernel 3
- * Algorithm: IR Byte Wise Reflection disabled
- *          : CRC 32-Bit Wise Reflection disabled
- *          : XOR with final CRC disabled
- * Initial seedvalue: 0U
- */
-XMC_FCE_t FCE_config3 =
-{
-    .kernel_ptr = XMC_FCE_CRC8,                             /* FCE Kernel Pointer */
-    .fce_cfg_update.config_refin = XMC_FCE_REFIN_RESET,     /* Disables byte-wise reflection */
-    .fce_cfg_update.config_refout = XMC_FCE_REFOUT_RESET,   /* Disables bit-wise reflection */
-    .fce_cfg_update.config_xsel = XMC_FCE_INVSEL_RESET,     /* Disables output inversion */
-    .seedvalue = 0U                                         /* CRC seed value to be used */
-};
 
 /*******************************************************************************
 * Function Name: handle_error
@@ -196,7 +129,7 @@ int main(void)
     result = cybsp_init() ;
     if(result != CY_RSLT_SUCCESS)
     {
-        CY_ASSERT(0);
+    CY_ASSERT(0);
     }
 
     /* Enable global interrupts */
@@ -207,23 +140,13 @@ int main(void)
 
     #if ENABLE_XMC_DEBUG_PRINT
     printf("Initialization done\r\n");
-    #endif
-
+    #else
     /* \x1b[2J\x1b[;H - ANSI ESC sequence to clear screen. */
     printf("\x1b[2J\x1b[;H");
     printf("===============================================================\r\n");
     printf("XMC MCU: FCE CRC example\r\n");
     printf("===============================================================\r\n\n");
-
-    /* Enable FCE module */
-    XMC_FCE_Enable();
-
-    /* Initialize the FCE Configuration */
-    XMC_FCE_Init(&FCE_config0);
-    XMC_FCE_Init(&FCE_config1);
-    XMC_FCE_Init(&FCE_config2);
-    XMC_FCE_Init(&FCE_config3);
-
+    #endif
     /* Initialize error counter */
     temp_mismatch = 0;
 
@@ -232,12 +155,14 @@ int main(void)
      * Output inversion enabled.
      * Expected Result : CRC = 0x209a5692, RES = 0xdf65a96d
      */
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("Step 1: CRC32 with output inversion\r\n\r\n");
     printf("Message = %s\r\n\r\n", (char*)usecase1_data1);
+    #endif
 
-    XMC_FCE_InitializeSeedValue(&FCE_config0, 0);
+    XMC_FCE_InitializeSeedValue(&fce_0_crc32_0_0_config, 0);
 
-    fce_status = XMC_FCE_CalculateCRC32(&FCE_config0, (uint32_t *) usecase1_data1, 
+    fce_status = XMC_FCE_CalculateCRC32(&fce_0_crc32_0_0_config, (uint32_t *) usecase1_data1,
                                         strlen((const char *)(usecase1_data1)), 
                                         &read_crc_result32);
     if(fce_status == XMC_FCE_STATUS_ERROR)
@@ -245,13 +170,18 @@ int main(void)
         /* Endless loop if error */
         printf("Error in calculating CRC: Step 1\r\n");
         handle_error();
+
     }
     
-    XMC_FCE_GetCRCResult(&FCE_config0, &crc_result);
+    XMC_FCE_GetCRCResult(&fce_0_crc32_0_0_config, &crc_result);
 
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("CRC = 0x%08x\r\n", (uint)read_crc_result32);
     printf("RES = 0x%08x\r\n", (uint)crc_result);
     printf("===============================================================\r\n\n");
+    #else
+    printf("CRC32 result with output inversion printed\r\n");
+    #endif
 
     /* Step 2: Perform a CRC32 check using Kernel 1 on usecase1_data1
      * Seed value is set to 0. CRC check comparison is enabled
@@ -260,21 +190,23 @@ int main(void)
      * Expected Result : CRC = 0x209a5692, RES = 0x209a5692
      */
     /* Enable CRC check */
-    XMC_FCE_EnableOperation(&FCE_config1, XMC_FCE_CFG_CONFIG_CCE);
+    XMC_FCE_EnableOperation(&fce_0_crc32_1_0_config, XMC_FCE_CFG_CONFIG_CCE);
 
     /* Used in 32-bit FCE, therefore temp_length is divided by 4 */
     temp_length = (strlen((char *)(usecase1_data1))) >> 2;
 
     /* Update the CRC and length of the earlier CRC calculation for comparison */
-    XMC_FCE_UpdateCRCCheck(&FCE_config1, read_crc_result32);
-    XMC_FCE_UpdateLength(&FCE_config1, temp_length);
+    XMC_FCE_UpdateCRCCheck(&fce_0_crc32_1_0_config, read_crc_result32);
+    XMC_FCE_UpdateLength(&fce_0_crc32_1_0_config, temp_length);
 
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("Step 2: CRC32 with CRC match enabled\r\n\r\n");
     printf("Message = %s\r\n\r\n", (char*)usecase1_data1);
+    #endif
 
-    XMC_FCE_InitializeSeedValue(&FCE_config1, 0);
+    XMC_FCE_InitializeSeedValue(&fce_0_crc32_1_0_config, 0);
 
-    fce_status = XMC_FCE_CalculateCRC32(&FCE_config1, (uint32_t *) usecase1_data1, 
+    fce_status = XMC_FCE_CalculateCRC32(&fce_0_crc32_1_0_config, (uint32_t *) usecase1_data1,
                                         strlen((const char *)(usecase1_data1)), 
                                         &read_crc_result32);
     if(fce_status == XMC_FCE_STATUS_ERROR)
@@ -284,20 +216,28 @@ int main(void)
         handle_error();
     }
 
-    XMC_FCE_GetCRCResult(&FCE_config1, &crc_result);
-    if(XMC_FCE_GetEventStatus(&FCE_config1, XMC_FCE_STS_MISMATCH_CRC))
+    XMC_FCE_GetCRCResult(&fce_0_crc32_1_0_config, &crc_result);
+    if(XMC_FCE_GetEventStatus(&fce_0_crc32_1_0_config, XMC_FCE_STS_MISMATCH_CRC))
     {
+    #if !ENABLE_XMC_DEBUG_PRINT
         printf("CRC Mismatch occurred\r\n");
+    #endif
         temp_mismatch += 1U;
     }
     else
     {
+    #if !ENABLE_XMC_DEBUG_PRINT
         printf("CRC Matched!\r\n");
+    #endif
     }
 
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("CRC = 0x%08x\r\n", (uint)read_crc_result32);
     printf("RES = 0x%08x\r\n", (uint)crc_result);
     printf("===============================================================\r\n\n");
+    #else
+    printf("CRC32 with CRC match result printed\r\n");
+    #endif
 
     /* Step 3: Perform a CRC32 check using Kernel 1 on usecase1_data2
      * Seed value is set to 0. CRC check comparison is enabled
@@ -305,14 +245,16 @@ int main(void)
      * CRC mismatch found and Length Error found.
      * Expected Result : CRC = 0x6a9255b2, RES = 0x6a9255b2
      */
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("Step 3: CRC32 with CRC Mismatch and Length error\r\n\r\n");
     printf("Message = %s\r\n\r\n", (char*)usecase1_data2);
+    #endif
 
-    XMC_FCE_InitializeSeedValue(&FCE_config1, 0);
+    XMC_FCE_InitializeSeedValue(&fce_0_crc32_1_0_config, 0);
 
-    XMC_FCE_UpdateLength(&FCE_config1, temp_length);
+    XMC_FCE_UpdateLength(&fce_0_crc32_1_0_config, temp_length);
 
-    fce_status = XMC_FCE_CalculateCRC32(&FCE_config1, (uint32_t *) usecase1_data2, 
+    fce_status = XMC_FCE_CalculateCRC32(&fce_0_crc32_1_0_config, (uint32_t *) usecase1_data2,
                                         strlen((const char *)(usecase1_data2)), 
                                         &read_crc_result32);
     if(fce_status == XMC_FCE_STATUS_ERROR)
@@ -322,37 +264,49 @@ int main(void)
         handle_error();
     }
 
-    XMC_FCE_GetCRCResult(&FCE_config1, &crc_result);
-    if(XMC_FCE_GetEventStatus(&FCE_config1, XMC_FCE_STS_MISMATCH_CRC))
+    XMC_FCE_GetCRCResult(&fce_0_crc32_1_0_config, &crc_result);
+    if(XMC_FCE_GetEventStatus(&fce_0_crc32_1_0_config, XMC_FCE_STS_MISMATCH_CRC))
     {
+    #if !ENABLE_XMC_DEBUG_PRINT
         printf("CRC Mismatch occurred\r\n");
+    #endif
         temp_mismatch += 2U;
     }
     else
     {
+    #if !ENABLE_XMC_DEBUG_PRINT
         printf("CRC Matched!\r\n");
+    #endif
     }
 
-    if(XMC_FCE_GetEventStatus(&FCE_config1,XMC_FCE_STS_LENGTH_ERROR))
+    if(XMC_FCE_GetEventStatus(&fce_0_crc32_1_0_config,XMC_FCE_STS_LENGTH_ERROR))
     {
+    #if !ENABLE_XMC_DEBUG_PRINT
         printf("Length error occurred\r\n");
+    #endif
     }
 
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("CRC = 0x%08x\r\n", (uint)read_crc_result32);
     printf("RES = 0x%08x\r\n", (uint)crc_result);
     printf("===============================================================\r\n\n");
+    #else
+    printf("CRC32 with CRC Mismatch and Length error result printed\r\n");
+    #endif
 
     /* Step 4: Perform a CRC16 check using Kernel 2 on usecase1_data3
      * Seed value is set to 0.
      * Byte-wise reflection is enabled.
      * Expected Result : CRC = 0xadf8, RES = 0xadf8
      */
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("Step 4: CRC16 with byte-wise reflection\r\n\r\n");
     printf("Message = %s\r\n\r\n", (char*)usecase1_data3);
+    #endif
 
-    XMC_FCE_InitializeSeedValue(&FCE_config2, 0);
+    XMC_FCE_InitializeSeedValue(&fce_0_crc16_0_config, 0);
 
-    fce_status = XMC_FCE_CalculateCRC16(&FCE_config2, (uint16_t *) usecase1_data3, 
+    fce_status = XMC_FCE_CalculateCRC16(&fce_0_crc16_0_config, (uint16_t *) usecase1_data3,
                                         strlen((const char *)(usecase1_data3)), 
                                         &read_crc_result16);
     if(fce_status == XMC_FCE_STATUS_ERROR)
@@ -362,22 +316,28 @@ int main(void)
         handle_error();
     }
 
-    XMC_FCE_GetCRCResult(&FCE_config2, &crc_result);
+    XMC_FCE_GetCRCResult(&fce_0_crc16_0_config, &crc_result);
 
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("CRC = 0x%04x\r\n", (uint)read_crc_result16);
     printf("RES = 0x%04x\r\n", (uint)crc_result);
     printf("===============================================================\r\n\n");
+    #else
+    printf("CRC16 with byte-wise reflection result printed\r\n");
+    #endif
 
     /* Step 5: Perform a CRC8 check using Kernel 3 on usecase1_data3
      * Seed value is set to 0. 
      * Expected Result : CRC = 0x7a, RES = 0x7a
      */
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("Step 5: CRC8 \r\n\r\n");
     printf("Message = %s\r\n\r\n", (char*)usecase1_data3);
+    #endif
 
-    XMC_FCE_InitializeSeedValue(&FCE_config3, 0);
+    XMC_FCE_InitializeSeedValue(&fce_0_crc8_0_config, 0);
 
-    fce_status = XMC_FCE_CalculateCRC8(&FCE_config3, (uint8_t *)usecase1_data3, 
+    fce_status = XMC_FCE_CalculateCRC8(&fce_0_crc8_0_config, (uint8_t *)usecase1_data3,
                                         strlen((const char *)(usecase1_data3)), 
                                         &read_crc_result8);
     if(fce_status == XMC_FCE_STATUS_ERROR)
@@ -387,13 +347,17 @@ int main(void)
         handle_error();
     }
 
-    XMC_FCE_GetCRCResult(&FCE_config3, &crc_result);
+    XMC_FCE_GetCRCResult(&fce_0_crc8_0_config, &crc_result);
     
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("CRC = 0x%02x\r\n", (uint)read_crc_result8);
     printf("RES = 0x%02x\r\n", (uint)crc_result);
     printf("===============================================================\r\n\n");
+    #else
+    printf("CRC8 result printed\r\n");
+    #endif
 
-    flag_status = XMC_FCE_GetEventStatus(&FCE_config3, XMC_FCE_STS_MISMATCH_CRC);
+    flag_status = XMC_FCE_GetEventStatus(&fce_0_crc8_0_config, XMC_FCE_STS_MISMATCH_CRC);
     if(flag_status)
     {
         /* endless loop if mismatch flag is triggered */
@@ -402,21 +366,23 @@ int main(void)
     }
 
     /* Step 6: Trigger a mismatch flag */
+    #if !ENABLE_XMC_DEBUG_PRINT
     printf("Step 6: Triggering a mismatch flag \r\n\r\n");
+    #endif
 
-    XMC_FCE_TriggerMismatch(&FCE_config3, XMC_FCE_CTR_MISMATCH_CRC);
+    XMC_FCE_TriggerMismatch(&fce_0_crc8_0_config, XMC_FCE_CTR_MISMATCH_CRC);
 
-    flag_status = XMC_FCE_GetEventStatus(&FCE_config3, XMC_FCE_STS_MISMATCH_CRC);
+    flag_status = XMC_FCE_GetEventStatus(&fce_0_crc8_0_config, XMC_FCE_STS_MISMATCH_CRC);
     if(flag_status)
     {
         /* endless loop if mismatch flag is triggered */
+
         printf("Mismatch flag is triggered: Step 6\r\n");
         handle_error();
     }
 
     for (;;)
     {
-        
     }
 }
 
