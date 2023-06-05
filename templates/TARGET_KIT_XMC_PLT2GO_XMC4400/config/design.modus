@@ -453,6 +453,7 @@
                         <Param id="ReceiveBufferErrorEvent" value="false"/>
                         <Param id="ReceiveBufferErrorEventSRSel" value="0"/>
                         <Param id="ShowSystemRelatedOutputs" value="false"/>
+                        <Param id="StartAfterInit" value="true"/>
                         <Param id="inFlash" value="true"/>
                     </Personality>
                 </Block>

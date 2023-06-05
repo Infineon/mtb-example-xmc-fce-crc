@@ -1,1 +1,11 @@
+# Documentation
+images
+
+# Exports, Project settings
+.mtbLaunchConfigs
+.settings
+.vscode
+
+# Templates directory
 templates/
+

@@ -41,22 +41,21 @@
 /******************************************************************************
 * Include header files
 ******************************************************************************/
-
 #include "cybsp.h"
 #include "cy_utils.h"
 #include "cy_retarget_io.h"
 
+
 /*******************************************************************************
 * Macros
 *******************************************************************************/
-
 /* Define macro to enable/disable printing of debug messages */
 #define ENABLE_XMC_DEBUG_PRINT              (0)
+
 
 /*******************************************************************************
 * Global Variables
 *******************************************************************************/
-
 /* Data Packet 1 */
 int8_t usecase1_data1[] =   "XMC MCU: FCE CRC example";
 /* Data Packet 2 */
@@ -127,9 +126,9 @@ int main(void)
 
     /* Initialize the device and board peripherals */
     result = cybsp_init() ;
-    if(result != CY_RSLT_SUCCESS)
+    if (result != CY_RSLT_SUCCESS)
     {
-    CY_ASSERT(0);
+        CY_ASSERT(0);
     }
 
     /* Enable global interrupts */
@@ -176,8 +175,8 @@ int main(void)
     XMC_FCE_GetCRCResult(&fce_0_crc32_0_0_config, &crc_result);
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%08x\r\n", (uint)read_crc_result32);
-    printf("RES = 0x%08x\r\n", (uint)crc_result);
+    printf("CRC = 0x%08lx\r\n", (uint32_t)read_crc_result32);
+    printf("RES = 0x%08lx\r\n", (uint32_t)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC32 result with output inversion printed\r\n");
@@ -232,8 +231,8 @@ int main(void)
     }
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%08x\r\n", (uint)read_crc_result32);
-    printf("RES = 0x%08x\r\n", (uint)crc_result);
+    printf("CRC = 0x%08lx\r\n", (uint32_t)read_crc_result32);
+    printf("RES = 0x%08lx\r\n", (uint32_t)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC32 with CRC match result printed\r\n");
@@ -287,8 +286,8 @@ int main(void)
     }
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%08x\r\n", (uint)read_crc_result32);
-    printf("RES = 0x%08x\r\n", (uint)crc_result);
+    printf("CRC = 0x%08lx\r\n", (uint32_t)read_crc_result32);
+    printf("RES = 0x%08lx\r\n", (uint32_t)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC32 with CRC Mismatch and Length error result printed\r\n");
@@ -319,8 +318,8 @@ int main(void)
     XMC_FCE_GetCRCResult(&fce_0_crc16_0_config, &crc_result);
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%04x\r\n", (uint)read_crc_result16);
-    printf("RES = 0x%04x\r\n", (uint)crc_result);
+    printf("CRC = 0x%04hx\r\n", (uint16_t)read_crc_result16);
+    printf("RES = 0x%04hx\r\n", (uint16_t)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC16 with byte-wise reflection result printed\r\n");
@@ -350,8 +349,8 @@ int main(void)
     XMC_FCE_GetCRCResult(&fce_0_crc8_0_config, &crc_result);
     
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%02x\r\n", (uint)read_crc_result8);
-    printf("RES = 0x%02x\r\n", (uint)crc_result);
+    printf("CRC = 0x%02x\r\n", (uint8_t)read_crc_result8);
+    printf("RES = 0x%02x\r\n", (uint8_t)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC8 result printed\r\n");
@@ -385,5 +384,6 @@ int main(void)
     {
     }
 }
+
 
 /* [] END OF FILE */
