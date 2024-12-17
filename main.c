@@ -175,8 +175,8 @@ int main(void)
     XMC_FCE_GetCRCResult(&fce_0_crc32_0_0_config, &crc_result);
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%08lx\r\n", (uint32_t)read_crc_result32);
-    printf("RES = 0x%08lx\r\n", (uint32_t)crc_result);
+    printf("CRC = 0x%08lx\r\n", (unsigned long)read_crc_result32);
+    printf("RES = 0x%08lx\r\n", (unsigned long)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC32 result with output inversion printed\r\n");
@@ -231,8 +231,8 @@ int main(void)
     }
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%08lx\r\n", (uint32_t)read_crc_result32);
-    printf("RES = 0x%08lx\r\n", (uint32_t)crc_result);
+    printf("CRC = 0x%08lx\r\n", (unsigned long)read_crc_result32);
+    printf("RES = 0x%08lx\r\n", (unsigned long)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC32 with CRC match result printed\r\n");
@@ -286,8 +286,8 @@ int main(void)
     }
 
     #if !ENABLE_XMC_DEBUG_PRINT
-    printf("CRC = 0x%08lx\r\n", (uint32_t)read_crc_result32);
-    printf("RES = 0x%08lx\r\n", (uint32_t)crc_result);
+    printf("CRC = 0x%08lx\r\n", (unsigned long)read_crc_result32);
+    printf("RES = 0x%08lx\r\n", (unsigned long)crc_result);
     printf("===============================================================\r\n\n");
     #else
     printf("CRC32 with CRC Mismatch and Length error result printed\r\n");
